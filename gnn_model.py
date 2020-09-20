@@ -7,14 +7,12 @@ from schnetpack import AtomsData
 import schnetpack as spk
 from tqdm import tqdm
 
-from flask import Blueprint, request, jsonify, Flask
 import torch
 import torch.nn.functional as F
-app = Flask(__name__)
-api = Blueprint('api', __name__)
 
 
-def gnn_pred(cif_file):
+
+def gnn_pred():
 
     # device = torch.device("cuda" if args.cuda else "cpu")
     device = "cpu"
@@ -33,26 +31,3 @@ def gnn_pred(cif_file):
             prediction_list.extend(pred['band_gap'].detach().cpu().numpy().flatten().tolist())
     
     return prediction_list[0]
-
-
-@api.route('/predict', methods=['POST'])
-def predict_rating():
-    '''
-    Endpoint to predict the rating using the
-    review's text data.
-    '''
-    if request.method == 'POST':
-        if 'cif_data' not in request.form:
-            return jsonify({'error': 'no review in body'}), 400
-        else:
-            print('in rest api')
-            cif_file = request.form['file_name']
-            cif_data = request.form['cif_data']
-            output = gnn_pred(cif_file)
-            print(output)
-            return jsonify(float(output))
-
-
-app.register_blueprint(api, url_prefix='/api')
-if __name__ == '__main__':
-    app.run(debug=True)

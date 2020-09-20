@@ -12,12 +12,12 @@ import requests
 import numpy as np
 from ase.io import read
 from schnetpack import AtomsData
+from gnn_model import gnn_pred
 
 import pandas as pd
 
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-server = app.server
 
 
 app.layout = html.Div([
@@ -104,14 +104,12 @@ def update_output(list_of_contents, modal_close, list_of_names, list_of_dates):
 
         content_type, content_string = list_of_contents.split(',')
         cif_data = base64.b64decode(content_string)
-        print('hello2')
         try:
             if "cif" in list_of_names:
                 print(list_of_names)
                 save_file(list_of_names, cif_data)
                 convert_to_db(list_of_names)
-                response = requests.post(f"http://localhost:5000/api/predict", data={'cif_data': cif_data, 'file_name' : list_of_names})
-                bandgap = response.json()
+                bandgap = gnn_pred()
                 return [html.Br()," The predicted cif value is "+str(bandgap)], False
             else:
                 print('dddd')
@@ -132,4 +130,5 @@ def update_output(list_of_contents, modal_close, list_of_names, list_of_dates):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    port = int(os.environ.get("PORT", 8050))
+    app.run_server(debug=True,port=port)
