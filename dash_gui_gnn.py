@@ -130,5 +130,4 @@ def update_output(list_of_contents, modal_close, list_of_names, list_of_dates):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8050))
-    app.run_server(debug=True,port=port)
+    app.run_server(debug=True)
