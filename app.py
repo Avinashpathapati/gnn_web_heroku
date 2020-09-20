@@ -18,7 +18,7 @@ import pandas as pd
 
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-
+server = app.server
 
 app.layout = html.Div([
     html.H2('Bandgap prediction for molecular crystals using SchNet model', style={'color': 'yellow'}),
